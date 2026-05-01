@@ -117,7 +117,8 @@ Respond ONLY with a valid JSON object. No prose, no markdown outside the JSON. A
       "label": "<nama zona, mis: Order Block Bullish / Area Demand / Liquidity Zone>",
       "price_area": "<kisaran harga atau deskripsi lokasi visual>",
       "action": "BUY" | "SELL" | "WATCH",
-      "description": "<penjelasan singkat dalam bahasa Indonesia mengapa zona ini penting dan apa yang harus dilakukan jika harga menyentuhnya>"
+      "description": "<penjelasan singkat dalam bahasa Indonesia mengapa zona ini penting dan apa yang harus dilakukan jika harga menyentuhnya>",
+      "box_2d": [ymin, xmin, ymax, xmax]
     }
   ]
 }
@@ -130,7 +131,8 @@ CRITICAL RULES:
 - Respond ONLY with the JSON object
 - BAHASA INDONESIA is mandatory for all text fields except signal, verdict_color, and zone_guide action fields
 - zone_guide MUST always be filled with at least 2-3 entries regardless of signal outcome — this is for educational purposes
-- zone_guide entries should teach the user WHERE to watch and WHY`;
+- zone_guide entries should teach the user WHERE to watch and WHY
+- For "box_2d", you MUST locate the zone visually in the chart image and return its bounding box coordinates. The coordinates must be an array of 4 integers [ymin, xmin, ymax, xmax] normalized from 0 to 1000. ymin is top, xmin is left, ymax is bottom, xmax is right. If you cannot visually locate the zone, return [0,0,0,0].`;
 
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
     

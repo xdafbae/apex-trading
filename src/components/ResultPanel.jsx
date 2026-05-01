@@ -53,6 +53,32 @@ export default function ResultPanel({ result, chartFile, onReanalyze, disabled }
                   className="chart-image-full"
                 />
                 <div className="chart-scan-line"></div>
+                {zoneGuide.map((zone, i) => {
+                  if (!zone.box_2d || zone.box_2d.length !== 4 || zone.box_2d.every(v => v === 0)) return null;
+                  const [ymin, xmin, ymax, xmax] = zone.box_2d;
+                  const isActive = activeZone === i;
+                  // Handle cases where AI returns invalid coordinates
+                  if (ymin >= ymax || xmin >= xmax) return null;
+                  
+                  return (
+                    <div
+                      key={`box-${i}`}
+                      className={`chart-bbox ${isActive ? 'active' : ''}`}
+                      style={{
+                        top: `${ymin / 10}%`,
+                        left: `${xmin / 10}%`,
+                        height: `${(ymax - ymin) / 10}%`,
+                        width: `${(xmax - xmin) / 10}%`,
+                        '--bbox-color': ACTION_COLOR[zone.action] || 'var(--green)',
+                        '--bbox-bg': ACTION_BG[zone.action] || 'rgba(0,255,136,0.1)',
+                      }}
+                      onMouseEnter={() => setActiveZone(i)}
+                      onMouseLeave={() => setActiveZone(null)}
+                    >
+                      <div className="bbox-label">{zone.label}</div>
+                    </div>
+                  );
+                })}
               </div>
             )}
 
