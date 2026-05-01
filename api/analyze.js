@@ -157,7 +157,6 @@ CRITICAL RULES:
       systemInstruction: { parts: [{ text: APEX_SYSTEM_PROMPT }] },
       generationConfig: {
         temperature: 0.1,
-        responseMimeType: 'application/json',
       },
       contents: [{
         role: "user",
