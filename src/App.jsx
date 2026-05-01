@@ -77,10 +77,6 @@ export default function App() {
           <span className="logo-version">v1.0</span>
         </div>
         <div className="header-right">
-          <div className="backend-status" id="backend-status">
-            <span className={`api-status-dot ${sc.dot}`}></span>
-            <span className="status-label">{sc.label}</span>
-          </div>
         </div>
       </header>
 
@@ -176,7 +172,7 @@ export default function App() {
       {/* ── FOOTER ── */}
       <footer className="app-footer">
         <p className="footer-warn">⚠ APEX is an analytical tool only. Not financial advice. Always manage your risk.</p>
-        <p>APEX v1.0 · Powered by Claude AI · SMC / ICT Methodology</p>
+        <p>APEX v1.0 · SMC / ICT Methodology</p>
       </footer>
     </div>
   );
