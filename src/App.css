@@ -456,6 +456,39 @@ body::before {
 .result-panel.signal-buy { border-color: rgba(0,255,136,0.3); box-shadow: 0 0 60px rgba(0,255,136,0.07); }
 .result-panel.signal-sell { border-color: rgba(255,51,102,0.3); box-shadow: 0 0 60px rgba(255,51,102,0.07); }
 
+/* Actions Bar */
+.action-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+.btn-action {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  color: var(--text-dim);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 1px;
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-action:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+@media print {
+  .upload-wrapper, .app-footer, .btn-action, .btn-reanalyze { display: none !important; }
+  .app-main { padding: 0 !important; }
+  .split-view { flex-direction: column; gap: 40px; }
+  body { background: #0b0c10; color: #fff; }
+}
+
 /* Signal Badge */
 .signal-section { display: flex; flex-direction: column; align-items: center; gap: 20px; }
 .signal-badge {

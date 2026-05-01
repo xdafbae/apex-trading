@@ -131,6 +131,37 @@ export default function ResultPanel({ result, chartFile, onReanalyze, disabled }
         {/* RIGHT — Analysis Result */}
         <div className="split-right">
           <div className={`result-panel ${signalClass}`}>
+            
+            {/* Action Buttons */}
+            <div className="action-buttons">
+              <button 
+                className="btn-action"
+                onClick={() => {
+                  const text = `APEX Trading Analysis\nAsset: ${result.asset_detected} | TF: ${result.timeframe_detected}\nSignal: ${signal} (Confidence: ${confidence}%)\n\nMarket Structure:\n${result.market_structure}\n\nExpert Reasoning:\n${result.reasoning}`;
+                  navigator.clipboard.writeText(text);
+                  alert('Analisa disalin ke clipboard!');
+                }}
+                title="Salin teks analisa"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                SALIN
+              </button>
+              <button 
+                className="btn-action"
+                onClick={() => window.print()}
+                title="Download sebagai PDF"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                PDF
+              </button>
+            </div>
 
             {/* Signal Badge */}
             <div className="signal-section">
