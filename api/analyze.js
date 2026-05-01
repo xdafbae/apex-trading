@@ -1,4 +1,4 @@
-// Native fetch implementation for Gemini API
+export const maxDuration = 60; // Set timeout to 60 seconds (Vercel Hobby plan maximum)
 
 export const config = {
   api: {
@@ -25,22 +25,28 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'METHOD_NOT_ALLOWED', message: 'Only POST method is allowed' });
   }
 
-  const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+  try {
+    const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
-  if (!GEMINI_API_KEY) {
-    return res.status(500).json({
-      error: 'SERVER_API_KEY_MISSING',
-      message: 'Gemini API key not configured on Vercel server.',
-    });
-  }
+    if (!GEMINI_API_KEY) {
+      return res.status(500).json({
+        error: 'SERVER_API_KEY_MISSING',
+        message: 'Gemini API key not configured on Vercel server.',
+      });
+    }
 
-  const { image_base64, media_type } = req.body;
+    let body = req.body || {};
+    if (typeof req.body === 'string') {
+      try { body = JSON.parse(req.body); } catch(e) {}
+    }
 
-  if (!image_base64 || !media_type) {
-    return res.status(400).json({ error: 'MISSING_FIELDS', message: 'image_base64 and media_type are required.' });
-  }
+    const { image_base64, media_type } = body;
 
-  const APEX_SYSTEM_PROMPT = `You are APEX — an elite trading signal analyzer with 12 years of professional trading experience and a win rate above 70%. You combine Smart Money Concepts (SMC), ICT (Inner Circle Trader) methodology, and institutional order flow analysis to provide precise, disciplined trading signals.
+    if (!image_base64 || !media_type) {
+      return res.status(400).json({ error: 'MISSING_FIELDS', message: 'image_base64 and media_type are required.' });
+    }
+
+    const APEX_SYSTEM_PROMPT = `You are APEX — an elite trading signal analyzer with 12 years of professional trading experience and a win rate above 70%. You combine Smart Money Concepts (SMC), ICT (Inner Circle Trader) methodology, and institutional order flow analysis to provide precise, disciplined trading signals.
 
 ## YOUR CORE PHILOSOPHY
 Quality over quantity. You ONLY issue a BUY or SELL signal when ALL mandatory conditions are met with high confidence. When in doubt, you output NO SIGNAL. Silence is also a position.
@@ -116,8 +122,7 @@ CRITICAL RULES:
 - Respond ONLY with the JSON object
 - BAHASA INDONESIA is mandatory for all text fields except the "signal" and "verdict_color" fields.`;
 
-  try {
-    const url = \`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=\${GEMINI_API_KEY}\`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
     
     const payload = {
       systemInstruction: { parts: [{ text: APEX_SYSTEM_PROMPT }] },
@@ -146,7 +151,7 @@ CRITICAL RULES:
       if (status === 429) {
         return res.status(429).json({ error: 'RATE_LIMITED', message: 'API rate limit exceeded. Please try again later.' });
       }
-      return res.status(status).json({ error: 'GEMINI_ERROR', message: errData?.error?.message || \`API error \${status}\` });
+      return res.status(status).json({ error: 'GEMINI_ERROR', message: errData?.error?.message || `API error ${status}` });
     }
 
     const data = await geminiRes.json();
@@ -156,7 +161,7 @@ CRITICAL RULES:
     try {
       analysis = JSON.parse(rawText);
     } catch {
-      const match = rawText.match(/\\{[\\s\\S]*\\}/);
+      const match = rawText.match(/\{[\s\S]*\}/);
       if (!match) throw new Error('Could not parse JSON from Gemini response');
       analysis = JSON.parse(match[0]);
     }
