@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
-import html2pdf from 'html2pdf.js';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 import Swal from 'sweetalert2';
 
 const ACTION_COLOR = {
@@ -162,22 +163,54 @@ export default function ResultPanel({ result, chartFile, onReanalyze, disabled }
               </button>
               <button 
                 className="btn-action"
-                onClick={() => {
-                  const element = document.querySelector('.result-wrapper');
+                onClick={async () => {
+                  const element = document.querySelector('.split-view');
                   const actions = document.getElementById('pdf-hide-actions');
                   if (actions) actions.style.display = 'none';
                   
-                  const opt = {
-                    margin:       10,
-                    filename:     `APEX_${result.asset_detected || 'Analysis'}.pdf`,
-                    image:        { type: 'jpeg', quality: 0.98 },
-                    html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#0b0c10' },
-                    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
-                  };
-                  
-                  html2pdf().set(opt).from(element).save().then(() => {
+                  try {
+                    // Simpan style asli
+                    const originalWidth = element.style.width;
+                    const originalBg = element.style.backgroundColor;
+                    const originalPadding = element.style.padding;
+                    const originalBorderRadius = element.style.borderRadius;
+                    
+                    // Paksa style khusus PDF agar tidak berantakan & tidak putih
+                    element.style.width = '1200px'; 
+                    element.style.backgroundColor = '#0b0c10'; // Dark theme background
+                    element.style.padding = '30px';
+                    element.style.borderRadius = '0px'; // Hindari rounded corners terpotong
+                    
+                    // Ambil screenshot kualitas tinggi
+                    const canvas = await html2canvas(element, {
+                      scale: 2, // Kualitas HD
+                      useCORS: true,
+                      backgroundColor: '#0b0c10',
+                      logging: false
+                    });
+                    
+                    // Kembalikan style seperti semula
+                    element.style.width = originalWidth;
+                    element.style.backgroundColor = originalBg;
+                    element.style.padding = originalPadding;
+                    element.style.borderRadius = originalBorderRadius;
                     if (actions) actions.style.display = 'flex';
-                  });
+                    
+                    const imgData = canvas.toDataURL('image/jpeg', 1.0);
+                    
+                    // Buat PDF dengan ukuran yang SAMA PERSIS dengan hasil screenshot
+                    const pdf = new jsPDF({
+                      orientation: canvas.width > canvas.height ? 'landscape' : 'portrait',
+                      unit: 'px',
+                      format: [canvas.width, canvas.height]
+                    });
+                    
+                    pdf.addImage(imgData, 'JPEG', 0, 0, canvas.width, canvas.height);
+                    pdf.save(`APEX_${result.asset_detected || 'Analysis'}.pdf`);
+                  } catch (err) {
+                    console.error("Gagal membuat PDF:", err);
+                    if (actions) actions.style.display = 'flex';
+                  }
                 }}
                 title="Download sebagai PDF"
               >
