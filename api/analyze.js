@@ -155,21 +155,22 @@ CRITICAL RULES:
     
     const payload = {
       systemInstruction: { parts: [{ text: APEX_SYSTEM_PROMPT }] },
-      generationConfig: {
-        temperature: 0.1,
-      },
       contents: [{
         role: "user",
         parts: [
-          { text: "Lakukan analisa chart trading ini sesuai dengan protokol APEX." },
           {
             inlineData: {
               mimeType: media_type,
               data: image_base64
             }
-          }
+          },
+          { text: "Analyze this trading chart and provide your signal assessment. Respond only with the JSON object." }
         ]
-      }]
+      }],
+      generationConfig: {
+        temperature: 0.1,
+        responseMimeType: 'application/json',
+      }
     };
 
     const response = await fetch(url, {
