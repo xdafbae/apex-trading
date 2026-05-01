@@ -37,7 +37,7 @@ export async function analyzeChart(imageFile) {
   const media_type = getMediaType(imageFile);
 
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 35000);
+  const timeoutId = setTimeout(() => controller.abort(), 55000);
 
   try {
     const response = await fetch(`${BACKEND_URL}/api/analyze`, {

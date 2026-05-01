@@ -151,44 +151,48 @@ CRITICAL RULES:
 - zone_guide entries should teach the user WHERE to watch and WHY
 - For "box_2d", you MUST locate the zone visually in the chart image and return its bounding box coordinates. The coordinates must be an array of 4 integers [ymin, xmin, ymax, xmax] normalized from 0 to 1000. ymin is top, xmin is left, ymax is bottom, xmax is right. If you cannot visually locate the zone, return [0,0,0,0].`;
 
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
     
     const payload = {
       systemInstruction: { parts: [{ text: APEX_SYSTEM_PROMPT }] },
       generationConfig: {
-        temperature: 0,
+        temperature: 0.1,
         responseMimeType: 'application/json',
       },
       contents: [{
         role: "user",
         parts: [
-          { inlineData: { mimeType: media_type, data: image_base64 } },
-          { text: "Analyze this trading chart and provide your signal assessment. Respond only with the JSON object." }
+          { text: "Lakukan analisa chart trading ini sesuai dengan protokol APEX." },
+          {
+            inlineData: {
+              mimeType: media_type,
+              data: image_base64
+            }
+          }
         ]
-      }],
-      generationConfig: { responseMimeType: "application/json" }
+      }]
     };
 
-    const geminiRes = await fetch(url, {
+    const response = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
 
-    if (!geminiRes.ok) {
-      const errData = await geminiRes.json().catch(() => ({}));
-      const status = geminiRes.status;
-      if (status === 400 && errData?.error?.message?.includes('API key')) {
-        return res.status(401).json({ error: 'INVALID_API_KEY', message: 'Gemini API key is invalid.' });
-      }
+    const status = response.status;
+    const data = await response.json();
+    if (!response.ok) {
+      console.error('Gemini API Error Details:', JSON.stringify(data));
       if (status === 429) {
         return res.status(429).json({ error: 'RATE_LIMITED', message: 'API rate limit exceeded. Please try again later.' });
       }
-      return res.status(status).json({ error: 'GEMINI_ERROR', message: errData?.error?.message || `API error ${status}` });
+      return res.status(status).json({ 
+        error: 'GEMINI_ERROR', 
+        message: `Gemini API returned status ${status}: ${data?.error?.message || 'Unknown Error'}` 
+      });
     }
 
-    const data = await geminiRes.json();
-    let rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
 
     let analysis;
     try {
