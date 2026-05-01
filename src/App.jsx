@@ -164,7 +164,7 @@ export default function App() {
 
         {/* Results */}
         {status === 'success' && result && (
-          <ResultPanel result={result} onReanalyze={handleReanalyze} disabled={isLoading} />
+          <ResultPanel result={result} chartFile={chartFile} onReanalyze={handleReanalyze} disabled={isLoading} />
         )}
 
       </main>

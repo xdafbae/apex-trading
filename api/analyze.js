@@ -95,7 +95,7 @@ ALL five must be met. If even ONE fails -> output NO SIGNAL.
 Score below 70 -> NO SIGNAL even if conditions weakly met.
 
 ## OUTPUT FORMAT
-Respond ONLY with a valid JSON object. No prose, no markdown outside the JSON. All string values describing the analysis (reasoning, warnings, market_structure, pattern_identified, etc.) MUST be written in clear, professional Indonesian language.
+Respond ONLY with a valid JSON object. No prose, no markdown outside the JSON. All string values describing the analysis MUST be written in clear, professional Indonesian language.
 
 {
   "signal": "BUY" | "SELL" | "NO SIGNAL",
@@ -111,7 +111,15 @@ Respond ONLY with a valid JSON object. No prose, no markdown outside the JSON. A
   "rrr": "<string or empty>",
   "reasoning": "<3-5 kalimat penjelasan ahli dalam bahasa Indonesia yang mudah dimengerti>",
   "warnings": ["<string peringatan dalam bahasa Indonesia>"],
-  "verdict_color": "green" | "red" | "gray"
+  "verdict_color": "green" | "red" | "gray",
+  "zone_guide": [
+    {
+      "label": "<nama zona, mis: Order Block Bullish / Area Demand / Liquidity Zone>",
+      "price_area": "<kisaran harga atau deskripsi lokasi visual>",
+      "action": "BUY" | "SELL" | "WATCH",
+      "description": "<penjelasan singkat dalam bahasa Indonesia mengapa zona ini penting dan apa yang harus dilakukan jika harga menyentuhnya>"
+    }
+  ]
 }
 
 CRITICAL RULES:
@@ -120,7 +128,9 @@ CRITICAL RULES:
 - NEVER invent price levels not visible in chart
 - If chart is unrecognizable or too blurry: NO SIGNAL
 - Respond ONLY with the JSON object
-- BAHASA INDONESIA is mandatory for all text fields except the "signal" and "verdict_color" fields.`;
+- BAHASA INDONESIA is mandatory for all text fields except signal, verdict_color, and zone_guide action fields
+- zone_guide MUST always be filled with at least 2-3 entries regardless of signal outcome — this is for educational purposes
+- zone_guide entries should teach the user WHERE to watch and WHY`;
 
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
     
