@@ -37,7 +37,7 @@ export default async function handler(req, res) {
 
     let body = req.body || {};
     if (typeof req.body === 'string') {
-      try { body = JSON.parse(req.body); } catch(e) {}
+      try { body = JSON.parse(req.body); } catch (e) { }
     }
 
     const { image_base64, media_type } = body;
@@ -152,7 +152,7 @@ CRITICAL RULES:
 - For "box_2d", you MUST locate the zone visually in the chart image and return its bounding box coordinates. The coordinates must be an array of 4 integers [ymin, xmin, ymax, xmax] normalized from 0 to 1000. ymin is top, xmin is left, ymax is bottom, xmax is right. If you cannot visually locate the zone, return [0,0,0,0].`;
 
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
-    
+
     const payload = {
       systemInstruction: { parts: [{ text: APEX_SYSTEM_PROMPT }] },
       contents: [{
@@ -188,9 +188,9 @@ CRITICAL RULES:
         return res.status(429).json({ error: 'RATE_LIMITED', message: 'Rate limit reached. Please wait a moment and try again.' });
       }
       // Always return 500 for other Gemini errors so browser doesn't confuse it with "route not found"
-      return res.status(500).json({ 
-        error: 'GEMINI_ERROR', 
-        message: `Gemini API error: ${errMsg}` 
+      return res.status(500).json({
+        error: 'GEMINI_ERROR',
+        message: `Gemini API error: ${errMsg}`
       });
     }
 

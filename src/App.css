@@ -489,6 +489,44 @@ body::before {
   body { background: #0b0c10; color: #fff; }
 }
 
+/* Fix untuk html2canvas yang sering gagal baca CSS Variables dan menjadikannya teks hitam */
+.pdf-export-mode * {
+  color: #f1f5f9; /* Paksa semua teks default jadi putih */
+}
+.pdf-export-mode .text-muted,
+.pdf-export-mode .section-title,
+.pdf-export-mode .chip-label,
+.pdf-export-mode .trade-label,
+.pdf-export-mode .result-disclaimer {
+  color: #94a3b8 !important; /* Paksa abu-abu untuk label */
+}
+.pdf-export-mode .text-dim,
+.pdf-export-mode .section-body,
+.pdf-export-mode .reasoning-text {
+  color: #cbd5e1 !important; /* Paksa abu-abu terang */
+}
+.pdf-export-mode .signal-buy,
+.pdf-export-mode .verdict-green,
+.pdf-export-mode .trade-value.tp {
+  color: #00ff88 !important; /* Paksa hijau */
+  border-color: #00ff88 !important;
+}
+.pdf-export-mode .signal-sell,
+.pdf-export-mode .verdict-red,
+.pdf-export-mode .trade-value.sl {
+  color: #ff3366 !important; /* Paksa merah */
+  border-color: #ff3366 !important;
+}
+.pdf-export-mode .pattern-value,
+.pdf-export-mode .reasoning-quote-mark,
+.pdf-export-mode .result-chip.highlight {
+  color: #00e5ff !important; /* Paksa accent cyan */
+  border-color: #00e5ff !important;
+}
+.pdf-export-mode .signal-badge {
+  background: transparent !important;
+}
+
 /* Signal Badge */
 .signal-section { display: flex; flex-direction: column; align-items: center; gap: 20px; }
 .signal-badge {

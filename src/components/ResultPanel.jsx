@@ -176,6 +176,7 @@ export default function ResultPanel({ result, chartFile, onReanalyze, disabled }
                     const originalBorderRadius = element.style.borderRadius;
                     
                     // Paksa style khusus PDF agar tidak berantakan & tidak putih
+                    element.classList.add('pdf-export-mode');
                     element.style.width = '1200px'; 
                     element.style.backgroundColor = '#0b0c10'; // Dark theme background
                     element.style.padding = '30px';
@@ -190,6 +191,7 @@ export default function ResultPanel({ result, chartFile, onReanalyze, disabled }
                     });
                     
                     // Kembalikan style seperti semula
+                    element.classList.remove('pdf-export-mode');
                     element.style.width = originalWidth;
                     element.style.backgroundColor = originalBg;
                     element.style.padding = originalPadding;
