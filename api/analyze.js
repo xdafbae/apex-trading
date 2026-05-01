@@ -151,7 +151,7 @@ CRITICAL RULES:
 - zone_guide entries should teach the user WHERE to watch and WHY
 - For "box_2d", you MUST locate the zone visually in the chart image and return its bounding box coordinates. The coordinates must be an array of 4 integers [ymin, xmin, ymax, xmax] normalized from 0 to 1000. ymin is top, xmin is left, ymax is bottom, xmax is right. If you cannot visually locate the zone, return [0,0,0,0].`;
 
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent?key=${GEMINI_API_KEY}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-pro:generateContent?key=${GEMINI_API_KEY}`;
     
     const payload = {
       systemInstruction: { parts: [{ text: APEX_SYSTEM_PROMPT }] },
