@@ -1,5 +1,4 @@
-import { GoogleGenAI } from '@google/genai';
-// Alternatively we can just use the standard fetch implementation we already have
+// Native fetch implementation for Gemini API
 
 export default async function handler(req, res) {
   // CORS Headers for Vercel
