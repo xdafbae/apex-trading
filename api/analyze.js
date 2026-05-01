@@ -1,5 +1,13 @@
 // Native fetch implementation for Gemini API
 
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '10mb',
+    },
+  },
+};
+
 export default async function handler(req, res) {
   // CORS Headers for Vercel
   res.setHeader('Access-Control-Allow-Credentials', true);
