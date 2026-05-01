@@ -155,6 +155,10 @@ CRITICAL RULES:
     
     const payload = {
       systemInstruction: { parts: [{ text: APEX_SYSTEM_PROMPT }] },
+      generationConfig: {
+        temperature: 0,
+        responseMimeType: 'application/json',
+      },
       contents: [{
         role: "user",
         parts: [
