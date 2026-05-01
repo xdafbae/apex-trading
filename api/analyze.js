@@ -181,13 +181,15 @@ CRITICAL RULES:
     const status = response.status;
     const data = await response.json();
     if (!response.ok) {
-      console.error('Gemini API Error Details:', JSON.stringify(data));
+      const errMsg = data?.error?.message || 'Unknown Gemini Error';
+      console.error(`Gemini API Error [${status}]:`, errMsg);
       if (status === 429) {
-        return res.status(429).json({ error: 'RATE_LIMITED', message: 'API rate limit exceeded. Please try again later.' });
+        return res.status(429).json({ error: 'RATE_LIMITED', message: 'Rate limit reached. Please wait a moment and try again.' });
       }
-      return res.status(status).json({ 
+      // Always return 500 for other Gemini errors so browser doesn't confuse it with "route not found"
+      return res.status(500).json({ 
         error: 'GEMINI_ERROR', 
-        message: `Gemini API returned status ${status}: ${data?.error?.message || 'Unknown Error'}` 
+        message: `Gemini API error: ${errMsg}` 
       });
     }
 
