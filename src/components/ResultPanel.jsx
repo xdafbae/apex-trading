@@ -1,4 +1,6 @@
 import { useState, useMemo } from 'react';
+import html2pdf from 'html2pdf.js';
+import Swal from 'sweetalert2';
 
 const ACTION_COLOR = {
   BUY: 'var(--green)',
@@ -133,13 +135,22 @@ export default function ResultPanel({ result, chartFile, onReanalyze, disabled }
           <div className={`result-panel ${signalClass}`}>
             
             {/* Action Buttons */}
-            <div className="action-buttons">
+            <div className="action-buttons" id="pdf-hide-actions">
               <button 
                 className="btn-action"
                 onClick={() => {
                   const text = `APEX Trading Analysis\nAsset: ${result.asset_detected} | TF: ${result.timeframe_detected}\nSignal: ${signal} (Confidence: ${confidence}%)\n\nMarket Structure:\n${result.market_structure}\n\nExpert Reasoning:\n${result.reasoning}`;
                   navigator.clipboard.writeText(text);
-                  alert('Analisa disalin ke clipboard!');
+                  Swal.fire({
+                    title: 'Berhasil Disalin!',
+                    text: 'Teks analisa telah disalin ke clipboard.',
+                    icon: 'success',
+                    background: '#15161c',
+                    color: '#fff',
+                    confirmButtonColor: '#00ff88',
+                    timer: 2000,
+                    showConfirmButton: false
+                  });
                 }}
                 title="Salin teks analisa"
               >
@@ -151,7 +162,23 @@ export default function ResultPanel({ result, chartFile, onReanalyze, disabled }
               </button>
               <button 
                 className="btn-action"
-                onClick={() => window.print()}
+                onClick={() => {
+                  const element = document.querySelector('.result-wrapper');
+                  const actions = document.getElementById('pdf-hide-actions');
+                  if (actions) actions.style.display = 'none';
+                  
+                  const opt = {
+                    margin:       10,
+                    filename:     `APEX_${result.asset_detected || 'Analysis'}.pdf`,
+                    image:        { type: 'jpeg', quality: 0.98 },
+                    html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#0b0c10' },
+                    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
+                  };
+                  
+                  html2pdf().set(opt).from(element).save().then(() => {
+                    if (actions) actions.style.display = 'flex';
+                  });
+                }}
                 title="Download sebagai PDF"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
